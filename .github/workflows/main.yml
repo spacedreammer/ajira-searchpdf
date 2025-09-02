@@ -51,4 +51,4 @@ jobs:
           files: dist/JobSearchTool.exe
           tag_name: ${{ steps.tag.outputs.tag_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.ajira  }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
