@@ -38,11 +38,13 @@ jobs:
         run: pip install -r requirements.txt pyinstaller
       - name: Build Linux Binary
         run: pyinstaller --onefile --windowed app.py --name JobSearchTool
-
       - name: Package .deb
         run: |
+          # Create the directory structure for the .deb package
           mkdir -p jobsearchtool_1.0/usr/bin
+          # Copy the built binary to the correct location
           cp dist/JobSearchTool jobsearchtool_1.0/usr/bin/jobsearchtool
+          # Create the DEBIAN directory and control file
           mkdir -p jobsearchtool_1.0/DEBIAN
           cat <<EOF > jobsearchtool_1.0/DEBIAN/control
           Package: jobsearchtool
@@ -53,15 +55,20 @@ jobs:
           Maintainer: Issa <your-email@example.com>
           Description: Job Offer PDF Search Tool
           EOF
+          # Build the .deb package and rename it to the correct format
           dpkg-deb --build jobsearchtool_1.0
+          mv jobsearchtool_1.0.deb jobsearchtool_1.0_amd64.deb
 
       - name: Install AppImage tool
-        run: sudo apt-get install -y appimagetool
+        run: sudo apt-get update && sudo apt-get install -y appimagetool
 
       - name: Package .AppImage
         run: |
+          # Create the AppDir directory structure
           mkdir -p JobSearchTool.AppDir/usr/bin
+          # Copy the built binary to the correct location
           cp dist/JobSearchTool JobSearchTool.AppDir/usr/bin/JobSearchTool
+          # Create the .desktop file
           cat <<EOF > JobSearchTool.AppDir/JobSearchTool.desktop
           [Desktop Entry]
           Name=Job Search Tool
@@ -70,7 +77,9 @@ jobs:
           Type=Application
           Categories=Utility;
           EOF
+          # Copy other necessary files
           cp README.md JobSearchTool.AppDir/
+          # Build the AppImage
           appimagetool JobSearchTool.AppDir
 
       - name: Upload Release Assets
@@ -78,6 +87,6 @@ jobs:
         with:
           files: |
             jobsearchtool_1.0_amd64.deb
-            JobSearchTool-x86_64.AppImage
+            JobSearchTool.AppDir-x86_64.AppImage
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
