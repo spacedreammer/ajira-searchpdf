@@ -28,7 +28,7 @@ The app:
 
 1. Download the ZIP file and extract it.  
 2. Inside, open the `dist/` folder.  
-3. Double-click **`JobSearchTool.exe`**.  
+3. Double-click **`tik.exe`**.  
 
 ✅ No need to install Python or any dependencies.  
 
