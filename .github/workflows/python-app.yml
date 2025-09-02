@@ -18,7 +18,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pyinstaller
       - name: Build EXE
-        run: pyinstaller --onefile --windowed app.py --name JobSearchTool
+        run: pyinstaller --onefile --windowed tik.py --name JobSearchTool
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt pyinstaller
       - name: Build Linux Binary
-        run: pyinstaller --onefile --windowed app.py --name JobSearchTool
+        run: pyinstaller --onefile --windowed tik.py --name JobSearchTool
       - name: Package .deb
         run: |
           # Create the directory structure for the .deb package
