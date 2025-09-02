@@ -52,11 +52,12 @@ jobs:
           Section: utils
           Priority: optional
           Architecture: amd64
-          Maintainer: Issa <your-email@example.com>
+          Maintainer: Issa <issa.4msuya@gmail.com>
           Description: Job Offer PDF Search Tool
           EOF
-          # Build the .deb package and rename it to the correct format
+          # Build the .deb package
           dpkg-deb --build jobsearchtool_1.0
+          # Rename the .deb file to the correct format for the release upload
           mv jobsearchtool_1.0.deb jobsearchtool_1.0_amd64.deb
 
       - name: Install AppImage tool
@@ -73,7 +74,6 @@ jobs:
           [Desktop Entry]
           Name=Job Search Tool
           Exec=JobSearchTool
-          Icon=jobsearchtool
           Type=Application
           Categories=Utility;
           EOF
