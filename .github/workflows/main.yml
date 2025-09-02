@@ -3,13 +3,13 @@ name: Build and Release JobSearchTool
 on:
   push:
     tags:
-      - "v*"   # Trigger when pushing tags like v1.0.0
+      - "v*"   # Trigger on tags like v1.0.0
   workflow_dispatch:
     inputs:
       tag:
         description: 'Tag to release (required if manual run)'
         required: false
-        default: ''  # optional default
+        default: ''
 
 jobs:
   build-windows:
@@ -30,18 +30,20 @@ jobs:
 
       - name: Determine Tag
         id: tag
+        shell: pwsh
         run: |
-          # If workflow triggered by tag push, use github.ref_name
-          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            echo "tag_name=${GITHUB_REF_NAME}" >> $GITHUB_OUTPUT
-          else
-            # For manual run, use input tag
-            if [ -z "${{ github.event.inputs.tag }}" ]; then
-              echo "Error: You must provide a tag for manual run."
-              exit 1
-            fi
-            echo "tag_name=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
-          fi
+          if ($env:GITHUB_REF -like 'refs/tags/*') {
+              # Workflow triggered by tag push
+              $tag = $env:GITHUB_REF -replace 'refs/tags/', ''
+              Write-Output "tag_name=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          } else {
+              # Manual run, use workflow input
+              if ("${{ github.event.inputs.tag }}" -eq "") {
+                  Write-Error "Error: You must provide a tag for manual run."
+                  exit 1
+              }
+              Write-Output "tag_name=${{ github.event.inputs.tag }}" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+          }
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
