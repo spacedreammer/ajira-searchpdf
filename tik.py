@@ -135,7 +135,7 @@ output_box = scrolledtext.ScrolledText(root, width=100, height=30, wrap=tk.WORD)
 output_box.pack(pady=10)
 
 # Configure text highlighting style
-output_box.tag_configure("highlight", foreground="blue", font=("Helvetica", 12, "bold"))
+output_box.tag_configure("highlight", foreground="blue", font=("Helvetica", 13, "bold"))
 
 # Run GUI
 root.mainloop()
