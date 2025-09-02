@@ -3,43 +3,45 @@ name: Build and Release JobSearchTool
 on:
   push:
     tags:
-      - "v*"   # Trigger on tags like v1.0.0
-  workflow_dispatch:
+      - "v*"   # Trigger only when pushing tags like v1.0.0
 
 jobs:
   build-windows:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      # Step 1: Checkout code
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
+      # Step 2: Set up Python
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
+      # Step 3: Install dependencies
       - name: Install dependencies
         run: pip install -r requirements.txt pyinstaller
 
+      # Step 4: Build EXE
       - name: Build EXE
         run: pyinstaller --onefile --windowed tik.py --name JobSearchTool
 
+      # Step 5: Determine the tag from the push
       - name: Determine Tag
         id: tag
         shell: pwsh
         run: |
           if ($env:GITHUB_REF -like 'refs/tags/*') {
-              # Workflow triggered by tag push
+              # Extract tag name from the ref
               $tag = $env:GITHUB_REF -replace 'refs/tags/', ''
               Write-Output "tag_name=$tag" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
           } else {
-              # Manual run, use workflow input
-              if ("${{ github.event.inputs.tag }}" -eq "") {
-                  Write-Error "Error: You must provide a tag for manual run."
-                  exit 1
-              }
-              Write-Output "tag_name=${{ github.event.inputs.tag }}" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
+              Write-Error "Workflow triggered without a tag. This workflow only works on tag pushes."
+              exit 1
           }
 
+      # Step 6: Upload Release Asset
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
