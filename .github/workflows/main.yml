@@ -4,12 +4,7 @@ on:
   push:
     tags:
       - "v*"   # Trigger on tags like v1.0.0
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to release (required if manual run)'
-        required: false
-        default: ''
+  
 
 jobs:
   build-windows:
